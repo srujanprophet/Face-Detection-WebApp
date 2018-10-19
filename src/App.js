@@ -43,7 +43,8 @@ const initialState = {
     email: '',
     entries: 0,
     joined: ''
-  }
+  },
+  hasFace: true
 }
 
 class App extends Component {
@@ -85,6 +86,9 @@ class App extends Component {
 
   onInputChange = (event) => {
     this.setState({input: event.target.value});
+    if(event.target.value === '' || this.state.boxes !== []) {
+      this.setState({boxes:[]});
+   }
   }
 
   onButtonSubmit = () => {
@@ -98,7 +102,7 @@ class App extends Component {
         })
       .then(response => response.json())
       .then(response => {
-        if(response) {
+        if(response !== "Nil") {
             fetch('https://serene-fortress-71124.herokuapp.com/image', {
             method: 'put',
             headers: {'Content-Type': 'application/json'},
@@ -110,8 +114,12 @@ class App extends Component {
             .then(count => {
               this.setState(Object.assign(this.state.user,{entries:count}))
             })
+            this.displayFaceBox(this.calculateFaceLocation(response))
+            this.setState({hasFace:true})
         }
-        this.displayFaceBox(this.calculateFaceLocation(response))
+        else {
+          this.setState({hasFace:false})
+        }
       })
       .catch(err => console.log(err));
   }
@@ -126,7 +134,7 @@ class App extends Component {
   }
 
   render() {
-    const {imageUrl, boxes, route, isSignedIn} = this.state;
+    const {imageUrl, boxes, route, isSignedIn, hasFace} = this.state;
     return (
       <div className="App">
         <Particles className='particles'
@@ -140,6 +148,7 @@ class App extends Component {
             <ImageLinkForm 
               onInputChange={this.onInputChange}
               onButtonSubmit={this.onButtonSubmit}
+              hasFace = {hasFace}
             />   
             <FaceRecognition boxes={boxes} imageUrl={imageUrl} />
           </div> :
