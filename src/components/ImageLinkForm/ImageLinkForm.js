@@ -10,6 +10,9 @@ const ImageLinkForm = ({ onInputChange, onButtonSubmit, hasFace }) => {
 		 <p className='f3'>
            { 'Copy the image address from google images or anywhere and paste it here.'}
         </p>
+        <p className='f6'>
+        	{ 'Note: url starts with http(s) and not data: '}
+        </p>
         { (!hasFace) ?
            <div className="">
 	           <p className='f3 bg-white'>
